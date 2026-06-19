@@ -29,6 +29,11 @@ Multimodal AI
 AI Infrastructure and Scalability
 Coding and Practical Implementation
 Behavioral and Scenario-Based Questions
+LangChain
+LangGraph
+Python
+FastAPI
+Resume-Based Questions
 Prepared and maintained by the Founder of Outcome School: Amit Shekhar
 Follow Amit Shekhar
 X/Twitter
@@ -646,3 +651,63 @@ Why are you interested in this AI engineering role?
 Your PM wants to ship an AI feature with a 15% hallucination rate on edge cases. How do you communicate the risk?
 A non-technical executive asks why your AI feature cannot be 100% accurate. How do you explain LLM limitations?
 You need to choose between a complex agentic system that scores 15% better on benchmarks, or a simpler RAG pipeline that is easier to maintain. How do you decide?
+
+LangChain
+Why was LCEL (LangChain Expression Language) introduced, and what are its benefits?
+Explain the core components of the Runnable interface: Passthrough, Parallel, Lambda, and Sequence.
+Why is LangChain deprecating legacy chains like LLMChain or RetrievalQA?
+How does conversational memory work in modern LangChain?
+How do you stream tokens and intermediate steps in LangChain?
+How do you implement tool calling and ensure structured outputs in LangChain?
+How does the LangChain callback system work, and how does it relate to LangSmith?
+What are the best practices for document chunking and retrieval using LangChain?
+How do you create custom tools in LangChain with validation?
+How does vector store abstraction work in LangChain, and how do you configure custom retrievers?
+
+LangGraph
+What is LangGraph, and when would you use it over standard LangChain agents?
+How does state management and "reducers" work in LangGraph?
+Explain Nodes, Edges, and Conditional Edges in LangGraph.
+How does LangGraph support memory persistence and checkpointing?
+How do you implement Human-in-the-Loop (Interrupts) in LangGraph?
+What is "Time Travel" and "State Replay" in LangGraph, and how does it help debugging?
+How do you handle parallel node execution and fan-out/fan-in in LangGraph?
+How does streaming work in LangGraph, and what is the difference between "values" and "updates" streaming?
+How do you implement modularity using Subgraphs in LangGraph?
+How do you prevent infinite loops in cyclical LangGraph agents?
+
+Python
+How do generators and `yield` work? How are they useful in AI applications?
+How do decorators work in Python? How do you write a decorator that accepts arguments?
+Explain the context manager protocol and how it applies to resource management?
+What is the GIL (Global Interpreter Lock)? How does it affect multi-threading vs. multi-processing vs. asyncio?
+How does `asyncio` achieve concurrency under the hood?
+What are metaclasses, and how do they differ from class decorators?
+How does Python manage memory, and how do you prevent leaks in RAG systems?
+Explain dunder (magic) methods and when you would implement them.
+Why is type hinting critical in AI codebases? What are Annotated, Union, and Generic?
+Compare Python dataclasses vs. Pydantic models. When do you use each?
+
+FastAPI
+What is the difference between `async def` and `def` endpoints in FastAPI?
+How does dependency injection (`Depends`) work in FastAPI?
+How does FastAPI integrate with Pydantic for validation and OpenAPI generation?
+How do you implement real-time token streaming (Server-Sent Events) in FastAPI?
+How and when do you use FastAPI Background Tasks?
+How do you set up persistent WebSockets in FastAPI?
+How do you configure CORS in FastAPI? What is custom middleware?
+How do you write unit and integration tests for async FastAPI endpoints?
+How do you implement JWT-based authentication in FastAPI?
+What are lifespan events in FastAPI? How are they useful for AI workloads?
+
+Resume-Based Questions
+Tell me about Nyaya-Pro. Why did you choose FAISS instead of a managed vector database like Pinecone?
+What was the role of the agentic query router in Nyaya-Pro? How does it classify and dispatch queries?
+Why did you use a semantic cross-encoder reranker in Nyaya-Pro? How did it affect latency?
+Explain your multi-agent CrewAI pipeline in JobPilot AI. How do the agents collaborate?
+In JobPilot AI, why did you use Ollama locally for development but Groq API in production?
+How does ExamGenie AI parse study PDFs and generate interactive MCQs? How do you prevent hallucinations?
+You worked at Yotta Infrastructures as a Senior Software Developer. How did you optimize the CCTV live-playback streams?
+How did you improve dashboard performance by 30% using NgRx in OneYotta Portal?
+How did you handle authentication in OneYotta Portal using Keycloak and Azure AD?
+How do you balance your strong frontend background (Angular, Flutter) with your transition into AI Engineering?
