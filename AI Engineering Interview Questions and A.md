@@ -677,6 +677,7 @@ How do you implement modularity using Subgraphs in LangGraph?
 How do you prevent infinite loops in cyclical LangGraph agents?
 
 Python
+
 How do generators and `yield` work? How are they useful in AI applications?
 How do decorators work in Python? How do you write a decorator that accepts arguments?
 Explain the context manager protocol and how it applies to resource management?
@@ -687,18 +688,61 @@ How does Python manage memory, and how do you prevent leaks in RAG systems?
 Explain dunder (magic) methods and when you would implement them.
 Why is type hinting critical in AI codebases? What are Annotated, Union, and Generic?
 Compare Python dataclasses vs. Pydantic models. When do you use each?
+What is the difference between `is` and `==`? Under what conditions can `is` behave unexpectedly?
+Why are mutable default arguments dangerous in Python, and how do you fix them?
+What is the output of `list_val = [[0]] * 3`? Explain why modifying `list_val[0][0]` changes other elements.
+Why can `x = x + [1]` behave differently than `x += [1]` in Python lists?
+Explain late binding in Python closures and how it can cause unexpected outputs inside loops.
+What is the difference between a shallow copy and a deep copy? When is each necessary?
+Why can a `finally` block override a `return` statement in Python?
+Explain the difference between class variables and instance variables. How can dynamic mutation cause bugs?
+What is name mangling in Python, and why does it matter?
+What is the difference between `dict.get(key)` and indexing `dict[key]`? When should you use each?
+Explain how arguments are passed in Python. Is it pass-by-value or pass-by-reference?
+What are Python namespaces, and what is the LEGB rule for scope resolution?
+What is Method Resolution Order (MRO) in Python, and how is it calculated for multiple inheritance?
+What are descriptors in Python, and how do they enable properties (`@property`) under the hood?
+What are `__slots__` in Python classes, and how do they improve performance and memory usage?
+What is the difference between `__new__` and `__init__` methods in class instantiation?
+How does NumPy leverage vectorization and memory layouts (C-contiguous vs Fortran-contiguous) for speed?
+How are NumPy arrays advantageous over Python lists? Explain in terms of memory layout and CPU caching.
+How does Pandas handle missing values under the hood (e.g. NaN, None), and how do you handle them memory-safely?
+What is the difference between a module and a package in Python? How does relative import syntax work?
+
 
 FastAPI
-What is the difference between `async def` and `def` endpoints in FastAPI?
-How does dependency injection (`Depends`) work in FastAPI?
-How does FastAPI integrate with Pydantic for validation and OpenAPI generation?
-How do you implement real-time token streaming (Server-Sent Events) in FastAPI?
-How and when do you use FastAPI Background Tasks?
-How do you set up persistent WebSockets in FastAPI?
-How do you configure CORS in FastAPI? What is custom middleware?
-How do you write unit and integration tests for async FastAPI endpoints?
-How do you implement JWT-based authentication in FastAPI?
-What are lifespan events in FastAPI? How are they useful for AI workloads?
+
+Explain how to implement custom request validation and serialization beyond Pydantic defaults.
+How do you design FastAPI microservices and handle inter-service communication?
+What strategies do you use for caching in FastAPI applications?
+How do you deploy a FastAPI application with Docker and Uvicorn/Gunicorn?
+Explain lifespan events (startup/shutdown) in FastAPI and their use cases.
+How do you implement rate limiting and request throttling in FastAPI?
+What is middleware in FastAPI and how do you create custom middleware?
+How do you write tests for FastAPI applications using TestClient?
+How do you implement CORS (Cross-Origin Resource Sharing) in FastAPI?
+How do you connect FastAPI with a database using SQLAlchemy?
+How do you handle errors and exceptions in FastAPI? Explain HTTPException.
+What is Dependency Injection in FastAPI, and how does it work?
+How do you handle database migrations in FastAPI using Alembic?
+Explain APIRouter and how to structure a large FastAPI application.
+How do you implement WebSockets in FastAPI for real-time communication?
+What are Background Tasks in FastAPI, and when should you use them?
+How do you implement OAuth2 with JWT authentication in FastAPI?
+Explain async and await in FastAPI. When should you use async def vs def?
+What is the purpose of response_model in FastAPI path operations?
+How do you handle form data and file uploads in FastAPI?
+Explain the different HTTP methods and their usage in FastAPI.
+How do you define request body using Pydantic models?
+What are path parameters and query parameters in FastAPI? How do you define them?
+How do you create a basic FastAPI application with a GET endpoint?
+What is FastAPI, and what are its key features?
+Compare FastAPI with Flask and Django REST Framework.
+How does FastAPI automatically generate OpenAPI (Swagger) documentation?
+What is Pydantic, and why is it integral to FastAPI?
+What is Starlette, and how does FastAPI build upon it?
+Explain the difference between ASGI and WSGI. Why does FastAPI use ASGI?
+
 
 Resume-Based Questions
 Tell me about Nyaya-Pro. Why did you choose FAISS instead of a managed vector database like Pinecone?
@@ -710,4 +754,4 @@ How does ExamGenie AI parse study PDFs and generate interactive MCQs? How do you
 You worked at Yotta Infrastructures as a Senior Software Developer. How did you optimize the CCTV live-playback streams?
 How did you improve dashboard performance by 30% using NgRx in OneYotta Portal?
 How did you handle authentication in OneYotta Portal using Keycloak and Azure AD?
-How do you balance your strong frontend background (Angular, Flutter) with your transition into AI Engineering?
+How do you balance your strong frontend background (Angular, Flutter) with your transition into AI Engineering?
