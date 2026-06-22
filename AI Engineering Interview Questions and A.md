@@ -34,6 +34,7 @@ LangGraph
 Python
 FastAPI
 Resume-Based Questions
+System Design & Scenario-Based
 Prepared and maintained by the Founder of Outcome School: Amit Shekhar
 Follow Amit Shekhar
 X/Twitter
@@ -755,3 +756,107 @@ You worked at Yotta Infrastructures as a Senior Software Developer. How did you 
 How did you improve dashboard performance by 30% using NgRx in OneYotta Portal?
 How did you handle authentication in OneYotta Portal using Keycloak and Azure AD?
 How do you balance your strong frontend background (Angular, Flutter) with your transition into AI Engineering?
+
+
+System Design & Scenario-Based
+
+Design a RAG chatbot for 10 million enterprise documents.
+User asks a question but retrieval returns irrelevant chunks. How would you debug?
+Design a legal document assistant with citation support.
+How would you reduce hallucinations in a financial RAG system?
+Design a customer support AI using company knowledge base.
+Chunk size is causing poor answers. How would you optimize it?
+Design a multilingual RAG system.
+How would you implement Hybrid Search (BM25 + Vector Search)?
+Design a GraphRAG architecture for connected knowledge.
+How would you handle document updates in real-time?
+Design a RAG system for healthcare records.
+User asks questions across multiple PDFs. How would you preserve context?
+Design a RAG pipeline for scanned PDFs and images.
+Retrieval latency exceeds 2 seconds. How would you optimize?
+Design a RAG system with source attribution.
+How would you evaluate retrieval quality?
+Design a RAG system supporting 1M daily users.
+How would you prevent confidential data leakage?
+Design semantic caching for a RAG application.
+Long-context model vs RAG: which would you choose and why?
+Design an autonomous travel planning agent.
+Design an AI recruiter agent that screens candidates.
+Build a coding assistant agent with GitHub integration.
+Design a research agent that searches, summarizes and cites sources.
+Design a customer support agent that can execute refunds.
+How would you implement agent memory?
+Design an agent capable of booking flights and hotels.
+How would you prevent infinite agent loops?
+Design a multi-step reasoning agent for tax advisory.
+Design an AI project manager agent.
+How would you implement tool selection?
+Design an email triage agent.
+Design a sales outreach agent.
+How would you handle agent failures?
+Design a self-correcting agent using Reflection Pattern.
+Design an AI agent for stock market research.
+How would you enforce agent guardrails?
+Design an AI agent with long-term memory.
+Design an autonomous workflow execution agent.
+Agent vs Workflow Automation: when would you use each?
+Design a multi-agent software development team.
+Design a planner-executor-reviewer architecture.
+Design a multi-agent customer support platform.
+When would you use multiple agents instead of one?
+Design an AI investment advisory team.
+How would agents communicate with each other?
+Design conflict resolution among agents.
+Design agent orchestration using LangGraph.
+Design a supervisor agent architecture.
+How would you evaluate multi-agent performance?
+Design ChatGPT for 100M users.
+How would you reduce inference cost by 50%?
+Design a token-efficient architecture.
+Design LLM serving on Kubernetes.
+Design multi-region LLM deployment.
+How would you implement KV-cache optimization?
+Design load balancing for LLM requests.
+Design a fallback model strategy.
+How would you optimize GPU utilization?
+Design an LLM platform supporting multiple models.
+Design an evaluation framework for RAG.
+How would you measure hallucination rate?
+Design online vs offline evaluation.
+How would you evaluate agent quality?
+Design A/B testing for prompts.
+Design observability for LLM applications.
+How would you monitor model drift?
+Design tracing for agent execution.
+How would you identify retrieval failures?
+Design a human-in-the-loop review system.
+Design a safe enterprise chatbot.
+How would you prevent prompt injection attacks?
+Design guardrails for an AI banking assistant.
+Design role-based access control in RAG.
+How would you secure tool-calling agents?
+Design compliance architecture for healthcare AI.
+How would you detect jailbreak attempts?
+Design data governance for GenAI.
+Design AI audit logging.
+How would you implement responsible AI controls?
+When would you choose Fine-Tuning over RAG?
+Design a domain-specific medical chatbot.
+How would you fine-tune with limited data?
+Design a LoRA-based fine-tuning pipeline.
+How would you avoid catastrophic forgetting?
+Design continual learning architecture.
+Fine-tuning vs Prompt Engineering tradeoffs?
+Design a custom LLM for legal documents.
+How would you evaluate a fine-tuned model?
+Design model versioning and rollback.
+Design ChatGPT from scratch.
+Design GitHub Copilot.
+Design Perplexity AI.
+Design an AI-powered search engine.
+Design Google NotebookLM.
+Design an AI coding interviewer.
+Design a real-time meeting summarization system.
+Design a YouTube video understanding assistant.
+Design an AI-powered tax advisor.
+Design an autonomous software engineer agent.
