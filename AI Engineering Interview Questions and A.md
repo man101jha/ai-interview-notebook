@@ -679,83 +679,1268 @@ How do you prevent infinite loops in cyclical LangGraph agents?
 
 Python
 
-How do generators and `yield` work? How are they useful in AI applications?
-How do decorators work in Python? How do you write a decorator that accepts arguments?
-Explain the context manager protocol and how it applies to resource management?
-What is the GIL (Global Interpreter Lock)? How does it affect multi-threading vs. multi-processing vs. asyncio?
-How does `asyncio` achieve concurrency under the hood?
-What are metaclasses, and how do they differ from class decorators?
-How does Python manage memory, and how do you prevent leaks in RAG systems?
-Explain dunder (magic) methods and when you would implement them.
-Why is type hinting critical in AI codebases? What are Annotated, Union, and Generic?
-Compare Python dataclasses vs. Pydantic models. When do you use each?
-What is the difference between `is` and `==`? Under what conditions can `is` behave unexpectedly?
-Why are mutable default arguments dangerous in Python, and how do you fix them?
-What is the output of `list_val = [[0]] * 3`? Explain why modifying `list_val[0][0]` changes other elements.
-Why can `x = x + [1]` behave differently than `x += [1]` in Python lists?
-Explain late binding in Python closures and how it can cause unexpected outputs inside loops.
-What is the difference between a shallow copy and a deep copy? When is each necessary?
-Why can a `finally` block override a `return` statement in Python?
-Explain the difference between class variables and instance variables. How can dynamic mutation cause bugs?
-What is name mangling in Python, and why does it matter?
-What is the difference between `dict.get(key)` and indexing `dict[key]`? When should you use each?
-Explain how arguments are passed in Python. Is it pass-by-value or pass-by-reference?
-What are Python namespaces, and what is the LEGB rule for scope resolution?
-What is Method Resolution Order (MRO) in Python, and how is it calculated for multiple inheritance?
-What are descriptors in Python, and how do they enable properties (`@property`) under the hood?
-What are `__slots__` in Python classes, and how do they improve performance and memory usage?
-What is the difference between `__new__` and `__init__` methods in class instantiation?
-How does NumPy leverage vectorization and memory layouts (C-contiguous vs Fortran-contiguous) for speed?
-How are NumPy arrays advantageous over Python lists? Explain in terms of memory layout and CPU caching.
-How does Pandas handle missing values under the hood (e.g. NaN, None), and how do you handle them memory-safely?
-What is the difference between a module and a package in Python? How does relative import syntax work?
+1. What are the differences between List, Tuple, Set, and Dictionary?
+Answer: 
+- **List**: Ordered, mutable, allows duplicate elements. E.g., `[1, 2, 2]`
+- **Tuple**: Ordered, immutable, allows duplicate elements. E.g., `(1, 2, 2)`
+- **Set**: Unordered, mutable, unique elements only. E.g., `{1, 2}`
+- **Dictionary**: Key-value pairs, unique/hashable keys, ordered by insertion. E.g., `{'a': 1}`
+
+2. Why are tuples immutable?
+Answer: Protecting data integrity, ensuring hashability (so they can be dictionary keys or set elements), and optimizing performance (faster instantiation and less memory overhead).
+
+3. What is Python's GIL (Global Interpreter Lock)?
+Answer: A mutex in CPython that ensures only one thread executes Python bytecode at a time, preventing multi-threaded CPU-bound concurrency but releasing the lock for I/O operations.
+
+4. How does Python manage memory?
+Answer: Through a private heap with automatic memory management using reference counting for immediate cleanup and a generational garbage collector to resolve reference cycles.
+
+5. What is reference counting?
+Answer: A memory management mechanism where Python tracks the number of references to each object. When an object's reference count drops to 0, its memory is immediately deallocated.
+
+6. What is garbage collection?
+Answer: Python's background generational memory manager that detects and sweeps cyclical references (objects referencing each other but unreachable from the code), which reference counting alone cannot clean.
+
+7. Difference between == and is?
+Answer: `==` compares the equality of values (do they have the same data?), whereas `is` compares object identity (do they point to the exact same memory address/ID?).
+
+8. What are mutable and immutable objects?
+Answer: Mutable objects can be modified after creation (e.g., lists, dicts, sets). Immutable objects cannot be changed (e.g., ints, strings, tuples).
+
+9. What happens internally when you execute:
+a = [1,2,3]
+b = a
+Answer: Python creates a list object `[1, 2, 3]` in memory and binds name `a` to it (ref count = 1). The statement `b = a` binds the name `b` to the *same* list object, incrementing its ref count to 2 without copying the list.
+
+10. Deep Copy vs Shallow Copy
+Answer: A shallow copy (`copy.copy()`) creates a new outer object but references the original inner/nested objects. A deep copy (`copy.deepcopy()`) recursively copies all nested objects, creating completely independent copies.
+
+OOP Questions
+
+11. What are the four pillars of OOP?
+Answer: 
+- **Encapsulation**: Grouping data and methods while restricting direct access.
+- **Abstraction**: Hiding complex implementation details, exposing only essential interfaces.
+- **Inheritance**: Allowing a child class to inherit attributes and methods from a parent class.
+- **Polymorphism**: The ability of different classes to respond to the same method signature in their own way.
+
+12. Difference between Abstraction and Encapsulation?
+Answer: Abstraction focuses on hiding *complexity* (exposing "what" it does), while encapsulation focuses on hiding *data/details* (restricting "how" variables are accessed).
+
+13. Difference between Method Overloading and Overriding?
+Answer: Overloading (not natively supported in Python) defines methods with the same name but different signatures in the same class. Overriding redefines a parent class's method in a child class with the exact same signature.
+
+14. What is Multiple Inheritance?
+Answer: A feature where a class inherits attributes and methods from more than one parent class (e.g., `class D(B, C)`).
+
+15. What is MRO (Method Resolution Order)?
+class A:
+class B(A):
+class C(A):
+class D(B,C):
+Answer: MRO is the order Python uses to search for a method or attribute in a class hierarchy, calculated using the C3 Linearization algorithm. For `class D(B, C)`, the MRO is: `D -> B -> C -> A -> object`.
+
+16. What is a Class Method?
+Answer: A method decorated with `@classmethod` that receives the class `cls` as its first argument rather than the instance `self`. It can access and modify class state.
+
+17. What is a Static Method?
+Answer: A method decorated with `@staticmethod` that doesn't receive `self` or `cls` as arguments. It behaves like a normal utility function namespace-bound to the class.
+
+18. What is Self?
+Answer: An argument representing the specific instance of the class being created or modified, allowing access to its attributes and methods.
+
+19. What is Super()?
+Answer: A built-in function that returns a proxy object delegation to parent or sibling classes in the Method Resolution Order (MRO), allowing cooperative multiple inheritance.
+
+20. What are Magic/Dunder Methods?
+Answer: Special class methods prefixed and suffixed with double underscores (e.g., `__init__`, `__str__`) that hook into Python's built-in behaviors, operators, and protocols.
+
+Functions
+
+21. What are *args and **kwargs?
+Answer: `*args` collects extra positional arguments into a tuple. `**kwargs` collects extra keyword arguments into a dictionary.
+
+22. What are Lambda Functions?
+Answer: Small, anonymous, single-expression functions declared using the `lambda` keyword (e.g., `lambda x, y: x + y`) that implicitly return the evaluated expression.
+
+23. What are Closures?
+Answer: Nested functions that retain access to the variables of their enclosing outer function scope even after the outer function has finished executing.
+
+24. What are Decorators?
+Answer: Functions that take another function as input, modify/extend its behavior, and return a new function without directly modifying the source code.
+
+Very Important
+
+@login_required
+def dashboard():
+25. How do decorators work internally?
+Answer: They act as syntactic sugar. Writing `@decorator` above a function definition is equivalent to writing `dashboard = decorator(dashboard)`, wrapping the original callable in a new function wrapper.
+
+Iterators & Generators
+
+26. What is an Iterator?
+Answer: An object representing a stream of data that implements the `__iter__()` method and `__next__()` method, raising `StopIteration` when elements are exhausted.
+
+27. What is Iteration Protocol?
+Answer: A protocol where passing an iterable to `iter()` returns an iterator, and calling `next()` on that iterator yields consecutive items until `StopIteration` is raised.
+
+28. What is a Generator?
+yield
+Answer: A special iterator created via a function containing the `yield` keyword. It yields values lazily, pausing execution state (variables, instruction pointer) between calls.
+
+29. Why use Generators?
+Answer: Memory efficiency. They yield elements one at a time on demand rather than loading an entire dataset/list into memory.
+
+30. Generator vs Normal Function
+Answer: A normal function runs to completion and returns a value via `return`, destroying its local state. A generator yields values via `yield`, pausing execution and preserving its state for subsequent calls.
+
+Concurrency
+
+31. Multithreading vs Multiprocessing
+Answer: Multithreading runs multiple threads in a single process, sharing memory but restricted by the GIL (only one thread executes Python code at a time). Multiprocessing runs separate processes with separate memory spaces and interpreters, achieving true CPU-bound parallelism.
+
+32. When to use Threading?
+Answer: For I/O-bound tasks (e.g., calling web APIs, database queries, reading/writing files) where threads spend most of their time waiting.
+
+33. When to use Multiprocessing?
+Answer: For CPU-bound tasks (e.g., heavy math computations, data parsing, machine learning inference) that require continuous CPU cycles.
+
+34. What is Async Programming?
+Answer: A cooperative multitasking model where a single thread (using an event loop) schedules and executes asynchronous tasks. Tasks cooperatively yield control via `await` when waiting on I/O.
+
+35. Async vs Multithreading
+Answer: Async is single-threaded, cooperative (explicit context switches via `await`), and extremely lightweight. Multithreading is multi-threaded, preemptive (OS-managed context switches), and prone to race conditions.
+
+36. What is asyncio?
+Answer: Python's built-in library for writing concurrent code using the `async`/`await` syntax, containing APIs for running event loops and handling asynchronous tasks.
+
+37. Event Loop Explain
+Answer: The engine of async execution. It monitors I/O events, runs a queue of active coroutines/tasks, and handles context switches when tasks await resources.
+
+38. What are Coroutines?
+Answer: Functions declared with `async def`. When called, they return a coroutine object rather than executing immediately, needing to be awaited or run on the event loop.
+
+39. What happens when await is called?
+Answer: The execution of the current coroutine is suspended, and control is returned to the event loop, allowing other tasks to run until the awaited operation completes.
+
+40. Why is async important for AI applications?
+Answer: AI systems heavily depend on I/O-bound operations: making concurrent LLM API calls, querying vector databases, retrieving document chunks, and streaming tokens to clients. Async handles these tasks efficiently without blocking the system.
+
+Exception Handling
+
+41. try-except-finally flow?
+Answer: 
+- `try`: Code that might raise an exception.
+- `except`: Catches and handles exceptions.
+- `else`: Runs only if no exceptions were raised.
+- `finally`: Runs under all circumstances (used for cleanup).
+
+42. Difference between Exception and Error?
+Answer: In Python, `Exception` (inheriting from `BaseException`) represents disruptions that can be caught and recovered from. Errors (like `SyntaxError` or `SystemError`) represent critical issues that usually cannot or should not be caught.
+
+43. How to create Custom Exceptions?
+Answer: By defining a class that inherits from the built-in `Exception` class: `class CustomError(Exception): pass`.
+
+44. What happens if exception isn't handled?
+Answer: The exception propagates up the call stack. If it reaches the main program entry without being caught, Python prints a traceback and crashes.
+
+Advanced Python
+
+45. What is Monkey Patching?
+Answer: The dynamic modification of classes or modules at runtime (e.g., swapping a production function with a mock during testing).
+
+46. What is Duck Typing?
+Answer: A design style where an object's suitability is determined by the presence of certain methods/properties rather than its explicit class inheritance ("if it walks and quacks like a duck, it's a duck").
+
+47. What are Metaclasses?
+Answer: The class of a class. While a class defines instance behavior, a metaclass defines class behavior (e.g., intercepting class creation). The default metaclass is `type`.
+
+48. What is new vs init?
+Answer: `__new__` is a static method that *creates* and returns a new instance of the class (runs first). `__init__` is an instance method that *initializes* that instance (runs second).
+
+49. What is Context Manager?
+with open()
+Answer: An object that implements `__enter__` and `__exit__` to setup and teardown resources automatically. It is invoked using the `with` statement.
+
+50. What is Python Packaging?
+pip
+setuptools
+wheel
+Answer: The ecosystem of preparing and distributing Python code. `setuptools` compiles and packages the code, `wheel` is the standard built-package binary format, and `pip` installs these packages from registries like PyPI.
+
+Python Coding Questions Frequently Asked in L2
+
+Strings
+
+1. Reverse a String
+Input: "hello"
+Output: "olleh"
+Answer: 
+```python
+def reverse_string(s: str) -> str:
+    return s[::-1]
+```
+
+2. Check Palindrome
+Input: "madam"
+Output: True
+Answer: 
+```python
+def is_palindrome(s: str) -> bool:
+    clean_s = "".join(c.lower() for c in s if c.isalnum())
+    return clean_s == clean_s[::-1]
+```
+
+3. Find First Non-Repeating Character
+Input: "aabbccdef"
+Output: d
+Answer: 
+```python
+def first_uniq_char(s: str) -> str:
+    from collections import Counter
+    counts = Counter(s)
+    for char in s:
+        if counts[char] == 1:
+            return char
+    return ""
+```
+
+4. Count Character Frequency
+Input: "banana"
+Output:
+b:1
+a:3
+n:2
+Answer: 
+```python
+def char_frequency(s: str) -> dict:
+    from collections import Counter
+    return dict(Counter(s))
+```
+
+5. Check Anagram
+Input: "listen", "silent"
+Output: True
+Answer: 
+```python
+def is_anagram(s1: str, s2: str) -> bool:
+    return sorted(s1) == sorted(s2)
+```
+
+6. Remove Duplicate Characters
+Input: "programming"
+Output: "progamin"
+Answer: 
+```python
+def remove_duplicate_chars(s: str) -> str:
+    return "".join(dict.fromkeys(s))
+```
+
+7. Find Most Frequent Character
+Input: "banana"
+Output: a
+Answer: 
+```python
+def most_frequent_char(s: str) -> str:
+    from collections import Counter
+    return Counter(s).most_common(1)[0][0]
+```
+
+8. Count Vowels and Consonants
+Input: "hello world"
+Answer: 
+```python
+def count_vowels_consonants(s: str) -> dict:
+    vowels = "aeiou"
+    clean_s = [c for c in s.lower() if c.isalpha()]
+    v_count = sum(1 for c in clean_s if c in vowels)
+    c_count = len(clean_s) - v_count
+    return {"vowels": v_count, "consonants": c_count}
+```
+
+Lists
+
+9. Remove Duplicates from List
+Input: [1,2,2,3,4,4,5]
+Output: [1,2,3,4,5]
+Answer: 
+```python
+def remove_duplicates_list(lst: list) -> list:
+    return list(dict.fromkeys(lst))
+```
+
+10. Find Second Largest Number
+Input: [10,20,30,40,50]
+Output: 40
+Answer: 
+```python
+def second_largest(lst: list) -> int:
+    unique_sorted = sorted(list(set(lst)))
+    return unique_sorted[-2] if len(unique_sorted) >= 2 else None
+```
+
+11. Find Missing Number
+Input: [1,2,3,5]
+Output: 4
+Answer: 
+```python
+def find_missing_number(lst: list) -> int:
+    n = len(lst) + 1
+    expected_sum = n * (n + 1) // 2
+    return expected_sum - sum(lst)
+```
+
+12. Find Duplicate Elements
+Input: [1,2,2,3,4,4,5]
+Output: [2,4]
+Answer: 
+```python
+def get_duplicates(lst: list) -> list:
+    seen, duplicates = set(), set()
+    for x in lst:
+        if x in seen:
+            duplicates.add(x)
+        seen.add(x)
+    return list(duplicates)
+```
+
+13. Flatten Nested List
+Input: [[1,2],[3,4],[5,6]]
+Output: [1,2,3,4,5,6]
+Answer: 
+```python
+def flatten(nested: list) -> list:
+    return [item for sublist in nested for item in sublist]
+```
+
+14. Find Common Elements
+Input: a = [1,2,3,4], b = [3,4,5,6]
+Output: [3,4]
+Answer: 
+```python
+def common_elements(a: list, b: list) -> list:
+    return list(set(a) & set(b))
+```
+
+15. Rotate List by K Positions
+Input: [1,2,3,4,5], k=2
+Output: [4,5,1,2,3]
+Answer: 
+```python
+def rotate_list(lst: list, k: int) -> list:
+    if not lst:
+        return lst
+    k = k % len(lst)
+    return lst[-k:] + lst[:-k]
+```
+
+Dictionary
+
+16. Word Frequency Counter
+Input: "apple banana apple mango banana apple"
+Output: {'apple':3, 'banana':2, 'mango':1}
+Answer: 
+```python
+def word_frequency(s: str) -> dict:
+    from collections import Counter
+    return dict(Counter(s.split()))
+```
+
+17. Merge Two Dictionaries
+Input: d1 = {"a":1}, d2 = {"b":2}
+Answer: 
+```python
+def merge_dicts(d1: dict, d2: dict) -> dict:
+    return d1 | d2
+```
+
+18. Sort Dictionary by Value
+Input: {"a":3, "b":1, "c":2}
+Answer: 
+```python
+def sort_dict_by_value(d: dict) -> dict:
+    return dict(sorted(d.items(), key=lambda item: item[1]))
+```
+
+Numbers
+
+19. Fibonacci Series
+Input: 0 1 1 2 3 5 8 (first 7 numbers)
+Answer: 
+```python
+def fibonacci_series(n: int) -> list:
+    if n <= 0: return []
+    elif n == 1: return [0]
+    series = [0, 1]
+    while len(series) < n:
+        series.append(series[-1] + series[-2])
+    return series
+```
+
+20. Check Prime Number
+Input: 17
+Output: Prime
+Answer: 
+```python
+def is_prime(n: int) -> str:
+    if n <= 1: return "Not Prime"
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return "Not Prime"
+    return "Prime"
+```
+
+21. Generate Prime Numbers till N
+Input: N=100
+Answer: 
+```python
+def primes_till_n(n: int) -> list:
+    primes = []
+    for num in range(2, n + 1):
+        if all(num % i != 0 for i in range(2, int(num**0.5) + 1)):
+            primes.append(num)
+    return primes
+```
+
+22. Factorial
+Input: 5! = 120
+Answer: 
+```python
+def factorial(n: int) -> int:
+    if n <= 1: return 1
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+```
+
+23. Armstrong Number
+Input: 153
+Answer: 
+```python
+def is_armstrong(n: int) -> bool:
+    digits = [int(d) for d in str(n)]
+    power = len(digits)
+    return sum(d ** power for d in digits) == n
+```
+
+24. Find GCD
+Input: 24, 36
+Output: 12
+Answer: 
+```python
+def find_gcd(a: int, b: int) -> int:
+    import math
+    return math.gcd(a, b)
+```
+
+Pattern / Logic
+
+25. FizzBuzz
+Input: 1 to 100
+Answer: 
+```python
+def fizz_buzz():
+    res = []
+    for i in range(1, 101):
+        if i % 15 == 0: res.append("FizzBuzz")
+        elif i % 3 == 0: res.append("Fizz")
+        elif i % 5 == 0: res.append("Buzz")
+        else: res.append(str(i))
+    return res
+```
+
+26. Find Longest Word
+Input: "I love artificial intelligence"
+Output: intelligence
+Answer: 
+```python
+def longest_word(sentence: str) -> str:
+    return max(sentence.split(), key=len)
+```
+
+27. Find Longest Substring Without Repeating Characters
+Input: abcabcbb
+Output: 3
+Answer: 
+```python
+def longest_uniq_substring(s: str) -> int:
+    char_map = {}
+    max_len = start = 0
+    for i, char in enumerate(s):
+        if char in char_map and char_map[char] >= start:
+            start = char_map[char] + 1
+        char_map[char] = i
+        max_len = max(max_len, i - start + 1)
+    return max_len
+```
+
+Python Specific
+
+28. Implement a Decorator
+Input:
+```python
+@timer
+def test():
+    pass
+```
+Measure execution time.
+Answer: 
+```python
+import time
+from functools import wraps
+
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"{func.__name__} took {end_time - start_time:.6f} seconds")
+        return result
+    return wrapper
+```
+
+29. Create a Generator
+Input: Generate numbers from 1 to N using yield
+Answer: 
+```python
+def number_generator(n: int):
+    for i in range(1, n + 1):
+        yield i
+```
+
+30. Implement LRU Cache
+Input: Cache of size 3, checking evictions
+Answer: 
+```python
+from collections import OrderedDict
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cache = OrderedDict()
+        self.capacity = capacity
+
+    def get(self, key):
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)
+        return self.cache[key]
+
+    def put(self, key, value):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            self.cache.popitem(last=False)
+```
 
 
 FastAPI
 
-Explain how to implement custom request validation and serialization beyond Pydantic defaults.
-How do you design FastAPI microservices and handle inter-service communication?
-What strategies do you use for caching in FastAPI applications?
-How do you deploy a FastAPI application with Docker and Uvicorn/Gunicorn?
-Explain lifespan events (startup/shutdown) in FastAPI and their use cases.
-How do you implement rate limiting and request throttling in FastAPI?
-What is middleware in FastAPI and how do you create custom middleware?
-How do you write tests for FastAPI applications using TestClient?
-How do you implement CORS (Cross-Origin Resource Sharing) in FastAPI?
-How do you connect FastAPI with a database using SQLAlchemy?
-How do you handle errors and exceptions in FastAPI? Explain HTTPException.
-What is Dependency Injection in FastAPI, and how does it work?
-How do you handle database migrations in FastAPI using Alembic?
-Explain APIRouter and how to structure a large FastAPI application.
-How do you implement WebSockets in FastAPI for real-time communication?
-What are Background Tasks in FastAPI, and when should you use them?
-How do you implement OAuth2 with JWT authentication in FastAPI?
-Explain async and await in FastAPI. When should you use async def vs def?
-What is the purpose of response_model in FastAPI path operations?
-How do you handle form data and file uploads in FastAPI?
-Explain the different HTTP methods and their usage in FastAPI.
-How do you define request body using Pydantic models?
-What are path parameters and query parameters in FastAPI? How do you define them?
-How do you create a basic FastAPI application with a GET endpoint?
-What is FastAPI, and what are its key features?
-Compare FastAPI with Flask and Django REST Framework.
-How does FastAPI automatically generate OpenAPI (Swagger) documentation?
-What is Pydantic, and why is it integral to FastAPI?
-What is Starlette, and how does FastAPI build upon it?
-Explain the difference between ASGI and WSGI. Why does FastAPI use ASGI?
+### Basics
+
+1. What is FastAPI?
+Answer: A modern, high-performance web framework for building APIs with Python 3.8+ based on standard Python type hints. Built on top of Starlette (for web parts) and Pydantic (for data validation).
+
+2. Why FastAPI over Flask?
+Answer: FastAPI provides native asynchronous (`async`/`await`) support, automatic data validation/serialization using Pydantic, and automatic interactive Swagger/ReDoc documentation generation, whereas Flask is synchronous by default and requires separate extensions for these features.
+
+3. Why FastAPI over Django?
+Answer: FastAPI is lightweight, async-first, and highly optimized for building microservices and REST/GraphQL APIs. Django is a heavyweight, synchronous full-stack framework with built-in admin panels and ORM, which has more overhead.
+
+4. FastAPI Architecture?
+Answer: FastAPI is an ASGI-compatible application layer built on **Starlette** (ASGI toolkit handling routing, sessions, WebSockets) and **Pydantic** (data validation/parsing layer). It uses **Uvicorn** as the underlying ASGI web server.
+
+5. ASGI vs WSGI
+Answer:
+* **WSGI** (Web Server Gateway Interface): Synchronous protocol. It handles one request per thread/process at a time, making it bad for long-lived connections (WebSockets, streaming).
+* **ASGI** (Asynchronous Server Gateway Interface): Successor to WSGI. It supports asynchronous execution, enabling a single process to handle WebSockets, SSE, HTTP streaming, and concurrent long-polling requests.
+
+### API Development
+
+6. How do you create an endpoint?
+Answer:
+```python
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"hello": "world"}
+```
+
+7. GET vs POST vs PUT vs PATCH vs DELETE
+Answer:
+* `GET`: Retrieves data.
+* `POST`: Submits data to create a new resource.
+* `PUT`: Replaces an entire existing resource.
+* `PATCH`: Partially updates an existing resource.
+* `DELETE`: Deletes a resource.
+
+8. Path Parameters
+Answer: Variable parts of the URL path used to identify a resource.
+```python
+@app.get("/users/{user_id}")
+def get_user(user_id: int):
+    return {"user_id": user_id}
+```
+
+9. Query Parameters
+Answer: Key-value pairs added after the `?` in a URL, usually optional and used for filtering/paging.
+```python
+@app.get("/items/")
+def read_items(skip: int = 0, limit: int = 10):
+    return {"skip": skip, "limit": limit}
+```
+
+10. Request Body
+Answer: The payload sent in the HTTP request (typically JSON), defined using a Pydantic model.
+```python
+from pydantic import BaseModel
+class Item(BaseModel):
+    name: str
+    price: float
+@app.post("/items/")
+def create_item(item: Item):
+    return item
+```
+
+### Pydantic
+
+11. What is Pydantic?
+Answer: A data validation and settings management library using Python type annotations. It enforces type hints at runtime and provides user-friendly errors when data is invalid.
+
+12. Why does FastAPI use Pydantic?
+Answer: To perform automatic request body parsing, runtime data validation, data sanitization/coercion, and response serialization.
+
+13. Data Validation Example
+Answer:
+```python
+from pydantic import BaseModel, EmailStr
+class User(BaseModel):
+    username: str
+    email: EmailStr
+    age: int
+```
+
+14. Optional Fields
+Answer: Defined using `Optional` from the `typing` module or `None` default values (or `str | None` in Python 3.10+).
+```python
+from typing import Optional
+class User(BaseModel):
+    bio: Optional[str] = None
+```
+
+15. Nested Models
+Answer: Pydantic models can contain lists or dicts of other Pydantic models.
+```python
+class Image(BaseModel):
+    url: str
+class Item(BaseModel):
+    name: str
+    images: list[Image]
+```
+
+16. Field Validators
+Answer: Custom validation logic applied to specific fields using the `@validator` decorator (or `@field_validator` in Pydantic v2).
+```python
+from pydantic import BaseModel, validator
+class User(BaseModel):
+    age: int
+    @validator("age")
+    def must_be_adult(cls, v):
+        if v < 18: raise ValueError("Must be 18+")
+        return v
+```
+
+17. Custom Validation
+Answer: Implemented using `@validator` (specific fields) or `@root_validator` (model-wide fields check, like password confirmation matching).
+
+18. Serialization
+Answer: The process of converting Pydantic objects or database models back into standard JSON formats. In Pydantic, this is done via `model.dict()` (v1) or `model.model_dump()` (v2).
+
+19. Response Models
+Answer: Defining the exact Pydantic model format that the endpoint is allowed to return.
+```python
+@app.get("/users/{id}", response_model=UserOut)
+def read_user(id: int):
+    return db_user
+```
+
+20. Why Response Models?
+Answer: It filters out private/unwanted fields (like hashed passwords), validates outgoing data, format-coerces fields, and automatically documents the response in Swagger.
+
+### Dependency Injection
+
+21. What is Depends()?
+Answer: A utility function in FastAPI used to declare a dependency. FastAPI will automatically evaluate the dependency function and inject its return value into the route handler.
+
+22. Why Dependency Injection?
+Answer: It maximizes code reuse (e.g. sharing database session creation, JWT verification, query parameters parsing) and makes unit testing easier by allowing dependencies to be easily mocked.
+
+23. Database Dependency Example
+Answer:
+```python
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+@app.get("/items/")
+def read_items(db: Session = Depends(get_db)):
+    return db.query(Item).all()
+```
+
+24. Shared Dependencies
+Answer: Dependencies that are declared globally or at the router level so that they apply to all endpoints (e.g. enforcing authentication on an entire set of routes).
+
+25. Dependency Lifecycle
+Answer: A dependency runs when a request hits the endpoint. If it uses `yield` (like the DB session), it executes the setup code, yields the value to the endpoint, and executes the cleanup code (after `yield`) after the response is sent.
+
+### Async Programming
+
+26. Difference between async def and def
+Answer:
+* `async def`: Defines a coroutine that runs on the main event loop. It must yield execution via `await` when performing I/O.
+* `def`: Defines a synchronous blocking function. FastAPI executes `def` functions on a background thread pool to prevent them from blocking the main event loop.
+
+27. When should async be used?
+Answer: For I/O-bound tasks (network requests, calling database queries, sending messages to queues, reading/writing files) where the system spends time waiting.
+
+28. What happens internally in async endpoint?
+Answer: When the async endpoint hits an `await` statement, it pauses execution and yields control back to the event loop. The event loop then runs other tasks until the awaited operation signals that it is complete.
+
+29. What is await?
+Answer: A keyword that pauses execution of the current coroutine, returning control to the event loop until the awaited task completes and returns its result.
+
+30. Event Loop Explain
+Answer: The core engine of async Python. It runs in a loop, scheduling tasks, checking if registered I/O events (like network packets arriving) are ready, and executing active coroutines.
+
+31. Async Database Calls
+Answer: Using database drivers that support async (like `asyncpg` or `aiomysql` with `SQLAlchemy`'s `ext.asyncio` extensions) to execute database queries without blocking the event loop.
+
+32. Async HTTP Calls
+Answer: Using non-blocking HTTP clients like `httpx` or `aiohttp` to call third-party APIs (like LLM providers) without stopping other requests.
+```python
+import httpx
+async with httpx.AsyncClient() as client:
+    response = await client.get("https://api.openai.com/...")
+```
+
+33. Blocking vs Non-Blocking
+Answer:
+* **Blocking**: A synchronous execution model where the thread is held and cannot perform any other work while waiting for an operation to finish.
+* **Non-Blocking**: An asynchronous execution model where the thread is released to perform other tasks while waiting for the operation to complete.
+
+34. Why async matters in GenAI APIs?
+Answer: AI APIs are highly I/O-bound: calls to LLM providers (which can take seconds to generate text) or document retrieval from vector databases can block the system. Async allows the server to handle thousands of simultaneous client connections and stream tokens concurrently.
+
+35. Async vs Threading
+Answer:
+* **Async**: Single-threaded, cooperative multitasking. The developer decides when to switch contexts (via `await`). Low overhead, supports high concurrency.
+* **Threading**: Multi-threaded, preemptive multitasking managed by the OS. Context switches are arbitrary, meaning there is thread overhead and potential for race conditions.
+
+### Authentication
+
+36. JWT Authentication
+Answer: JSON Web Token authentication. Users log in with credentials, the server generates a signed cryptographical token (JWT), and the client sends this token in the header (`Authorization: Bearer <token>`) for subsequent requests.
+
+37. OAuth2 Flow
+Answer: The industry standard protocol for authorization. FastAPI integrates with the **Authorization Code Flow with PKCE** or **Resource Owner Password Credentials Flow** to safely authenticate clients and issue access tokens.
+
+38. Refresh Tokens
+Answer: Long-lived tokens stored securely on the client side, used to request new short-lived access tokens from the auth server once they expire without prompting user re-login.
+
+39. Access Tokens
+Answer: Short-lived cryptographic tokens (usually JWTs, valid for 15-30 minutes) used by the client to authorize API requests.
+
+40. How FastAPI handles security?
+Answer: FastAPI provides the `fastapi.security` module which offers built-in classes (`OAuth2PasswordBearer`, `APIKeyHeader`, `HTTPBasic`) that extract credentials from headers/cookies and integrate directly into the dependency injection engine.
+
+### Database
+
+41. FastAPI with SQLAlchemy
+Answer: Implemented by declaring a database engine, creating a `sessionmaker`, and using a dependency function (`get_db`) to yield session instances into endpoints.
+
+42. ORM vs Raw SQL
+Answer:
+* **ORM** (Object-Relational Mapper): Maps database tables to Python classes. Safer (prevents SQL Injection), faster to write, but can add query overhead.
+* **Raw SQL**: Hand-written queries. Highly optimized, but tedious to write and maintain, and requires careful parameters parsing to prevent security risks.
+
+43. Session Management
+Answer: Creating a database session per request and ensuring it is closed (`db.close()`) once the request completes, which is managed cleanly using a yielding FastAPI dependency.
+
+44. Connection Pooling
+Answer: A cache of active database connections maintained by the server. Instead of creating and destroying connections for every request (which is slow), FastAPI/SQLAlchemy reuse connections from the pool.
+
+45. Async SQLAlchemy
+Answer: Using `create_async_engine` and `AsyncSession` alongside an async driver (like `asyncpg`) to perform database queries in a non-blocking manner.
+
+### Production Deployment
+
+46. How do you deploy FastAPI?
+Answer: FastAPI applications are deployed inside Docker containers using an ASGI stack.
+```
+Client
+  ↓
+Nginx
+  ↓
+Gunicorn
+  ↓
+Uvicorn Workers
+  ↓
+FastAPI
+```
+Explanation: Nginx acts as the reverse proxy (handling SSL/static content), Gunicorn acts as the process manager, which spawns and runs Uvicorn workers (`UvicornWorker`) to execute the FastAPI application.
+
+47. What is Uvicorn?
+Answer: A lightning-fast ASGI web server implementation for Python, built on `uvloop` (a fast C implementation of the event loop) and `httptools`.
+
+48. What is Gunicorn?
+Answer: A WSGI HTTP server commonly used as a process manager in production to monitor, spawn, restart, and scale worker processes (like Uvicorn workers) to ensure high availability.
+
+49. How to Dockerize FastAPI?
+Answer:
+```dockerfile
+FROM python:3.10
+WORKDIR /code
+COPY ./requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY ./app /code/app
+CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:80"]
+```
+
+50. How to scale FastAPI for 10,000 concurrent users?
+Answer:
+1. Set up horizontal scaling behind a Load Balancer (e.g. AWS ALB or Kubernetes Ingress).
+2. Run FastAPI asynchronously using Uvicorn workers.
+3. Implement Connection Pooling and Async database drivers to prevent database bottlenecks.
+4. Use **Redis** for session management, semantic caching, and rate limiting.
+5. Offload heavy computation (like document processing or LLM inference) to Celery task queues.
+
+### FastAPI + GenAI Questions
+
+51. How would you expose an LLM through FastAPI?
+Answer: Expose a POST endpoint that accepts parameters (prompt, temperature, etc.) via a Pydantic model, invokes the LLM client (e.g. OpenAI or Anthropic SDKs), and returns the generated text.
+```python
+@app.post("/generate")
+async def generate_text(payload: PromptPayload):
+    response = await openai_client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": payload.prompt}]
+    )
+    return {"response": response.choices[0].message.content}
+```
+
+52. How would you stream LLM responses?
+Answer: By using `StreamingResponse` from `fastapi.responses` combined with an asynchronous generator function that streams chunks from the LLM provider.
+```python
+from fastapi.responses import StreamingResponse
+
+async def token_generator(prompt):
+    stream = await openai_client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": prompt}],
+        stream=True
+    )
+    async for chunk in stream:
+        content = chunk.choices[0].delta.content
+        if content:
+            yield content
+
+@app.get("/stream")
+async def stream_endpoint(prompt: str):
+    return StreamingResponse(token_generator(prompt), media_type="text/event-stream")
+```
+
+53. How would you upload PDFs for RAG?
+Answer: Define a POST endpoint that accepts files via `UploadFile`, saves/reads the file stream, parses it using a PDF extractor, splits it into chunks, generates embeddings, and saves them to the vector store.
+```python
+from fastapi import UploadFile, File
+@app.post("/upload-pdf")
+async def upload_pdf(file: UploadFile = File(...)):
+    contents = await file.read()
+    # Parse PDF contents, chunk, embed, and store in FAISS/Pinecone
+    return {"filename": file.filename, "status": "indexed"}
+```
+
+54. How would you process large documents asynchronously?
+Answer: By offloading the document processing to a background task using FastAPI's `BackgroundTasks` or a dedicated distributed task queue like **Celery** with Redis, preventing the HTTP request from timing out.
+```python
+from fastapi import BackgroundTasks
+
+def process_pdf_task(file_path):
+    # Heavy parsing, embedding, and indexing work
+    pass
+
+@app.post("/process-large-doc")
+async def process_doc(background_tasks: BackgroundTasks):
+    background_tasks.add_task(process_pdf_task, "path/to/doc.pdf")
+    return {"message": "Document processing started in background"}
+```
+
+55. How would you integrate LangChain with FastAPI?
+Answer: By instantiating LangChain chains, runnables, or agents globally or inside dependency injection, and invoking them inside endpoints. For streaming, you can use LangChain's async streaming API (`astream` or `astream_events`) wrapped in a FastAPI `StreamingResponse`.
+
+56. How would you handle 1000 simultaneous AI requests?
+Answer:
+1. Use fully asynchronous routing to avoid blocking thread pools.
+2. Implement **Prompt Caching** (supported by Anthropic/OpenAI) to reduce latency and processing overhead.
+3. Deploy FastAPI behind a load balancer on multiple containers.
+4. Use a Redis-based rate limiter to protect endpoints from overload.
+5. Implement request queuing/buffering.
+
+57. How would you cache LLM responses?
+Answer: By storing prompt/response pairs in a caching layer. For exact match lookup, use standard key-value caching. For semantic similarity match lookup (handling slightly rephrased queries), implement **Semantic Caching** using vector similarity search.
+
+58. Redis vs Memory Cache?
+Answer:
+* **Memory Cache**: Extremely fast, but local to a single container/process. It gets cleared on container restart and cannot be shared across multiple scaled instances.
+* **Redis**: Distributed and persistent. It can be shared across all scaled instances of FastAPI, makes capacity planning easier, and supports semantic vector indices.
+
+59. How would you implement conversation history?
+Answer: By storing conversation history (list of user/assistant messages) in **Redis** indexed by a unique `session_id`. When a request comes in, retrieve the history, append the new message, send it to the LLM, and update the store.
+```python
+@app.post("/chat")
+async def chat(session_id: str, message: str):
+    history = await redis.get(session_id) or []
+    history.append({"role": "user", "content": message})
+    response = await call_llm(history)
+    history.append({"role": "assistant", "content": response})
+    await redis.set(session_id, history)
+    return {"response": response}
+```
+
+60. How would you secure an AI API from prompt injection?
+Answer:
+1. Use structured inputs (JSON schemas) instead of passing raw, unvalidated text blobs.
+2. Enforce strict **system prompts** that instruct the model to ignore user attempts to override instructions.
+3. Run an validation layer (like **Llama Guard** or **NeMo Guardrails**) to check inputs before sending them to the core LLM.
+4. Implement input sanitization and length limits on user prompts.
 
 
 Resume-Based Questions
-Tell me about Nyaya-Pro. Why did you choose FAISS instead of a managed vector database like Pinecone?
-What was the role of the agentic query router in Nyaya-Pro? How does it classify and dispatch queries?
-Why did you use a semantic cross-encoder reranker in Nyaya-Pro? How did it affect latency?
-Explain your multi-agent CrewAI pipeline in JobPilot AI. How do the agents collaborate?
-In JobPilot AI, why did you use Ollama locally for development but Groq API in production?
-How does ExamGenie AI parse study PDFs and generate interactive MCQs? How do you prevent hallucinations?
-You worked at Yotta Infrastructures as a Senior Software Developer. How did you optimize the CCTV live-playback streams?
-How did you improve dashboard performance by 30% using NgRx in OneYotta Portal?
-How did you handle authentication in OneYotta Portal using Keycloak and Azure AD?
-How do you balance your strong frontend background (Angular, Flutter) with your transition into AI Engineering?
+
+### Section 1: General/Introductory Questions
+
+1. Tell me about yourself.
+Answer: "I am currently a Senior Software Developer at Yotta Infrastructures with 3+ years of experience building enterprise applications using Angular, Flutter and Python. While working on large-scale monitoring and customer portals, I developed a strong interest in AI engineering. Over the last year I built production-grade AI applications such as Nyaya-Pro, JobPilot AI and ExamGenie AI using FastAPI, LangChain, CrewAI, Gemini and vector databases. I now want to leverage both my software engineering foundation and AI expertise in a dedicated GenAI role."
+
+Follow-ups:
+* **Why AI?**: AI is transitioning from research to production engineering. Building systems that can reason, orchestrate, and retrieve information dynamically represents the next paradigm of software development.
+* **Why leave frontend?**: I am not abandoning frontend; rather, I'm expanding my capabilities. Frontend taught me clean architecture and performance, but building the backend reasoning engines (AI agents/RAG) is technically more challenging and impactful.
+* **Why not continue as full-stack?**: I want to specialize. While I can build end-to-end, specializing in GenAI engineering allows me to deeply understand retrieval orchestration, agent loops, and model optimization.
+
+2. Why are you moving from Angular to AI?
+Answer: "Frontend development taught me scalable architecture, performance optimization and production deployments. AI engineering allows me to build intelligent systems that can reason, retrieve information and automate workflows. I find this area more impactful and technically challenging."
+
+Follow-up:
+* **Why didn't you become a full-stack developer first?**: I did work across the stack (including Python backend work at Yotta), but the rapid emergence of agentic workflows and RAG convinced me to focus my efforts on AI engineering.
+* **How much production AI experience do you actually have?**: I have spent the last year designing, benchmarking, and building AI tools (like Nyaya-Pro and JobPilot AI) utilizing tools like FastAPI, LangChain, and CrewAI, deploying them in sandboxed and staging environments.
+
+3. Why LTIMindtree?
+Answer: LTIMindtree has a strong focus on enterprise AI adoption, working with global clients on large-scale AI transformation projects. Joining LTIMindtree gives me the opportunity to build production-grade AI systems, handle real-world retrieval challenges (like hybrid search and multi-agent orchestration), and scale AI solutions for enterprise clients.
+
+4. Why should we hire you over pure AI candidates?
+Answer: "Many AI candidates have strong model knowledge but limited production experience. I bring both enterprise software engineering and AI implementation experience. I know how to integrate models into robust, maintainable, and scalable applications."
+
+Follow-up:
+* **Give examples**: In Nyaya-Pro, I didn't just call an API; I built an agentic router, implemented custom semantic cross-encoder reranking to optimize retrieval quality, and set up local FAISS indexes to manage costs and latency.
+
+5. What is your biggest achievement?
+Answer: My major achievements combine engineering rigor with AI innovation:
+* **Angular 14 → 17 Migration**: Upgraded the core dashboard in OneYotta Portal, managing breaking changes and RxJS migrations smoothly.
+* **Dashboard Performance**: Improved dashboard response and rendering speeds by 30% via lazy loading and NgRx state management.
+* **Nyaya-Pro**: Architected and built an end-to-end legal assistant that indexes complex Indian law codes using a retrieval-reranker pipeline.
+
+### Section 2: Yotta Experience (Questions 6-15)
+
+6. Explain OneYotta Portal.
+Answer: OneYotta Portal is the primary customer portal at Yotta Infrastructures, allowing clients to manage cloud resources, check resource monitoring metrics, raise support tickets, and view billing details.
+
+Follow-up:
+* **Architecture?**: Built with Angular on the frontend for dynamic rendering and State management (NgRx), communicating via REST APIs with a microservices-based backend.
+* **User count?**: Handles thousands of active enterprise B2B customers.
+* **Authentication?**: Integrated with Keycloak and Azure AD for secure Single Sign-On (SSO).
+
+7. Explain Keycloak integration.
+Answer: I integrated Keycloak as our Identity Provider (IdP) for SSO. It handles authentication and issues tokens to authorize API access.
+
+Follow-up:
+* **OAuth flow?**: Used the Authorization Code Flow with Proof Key for Code Exchange (PKCE) for secure frontend authentication.
+* **Access Token?**: Short-lived JWT containing user roles used to authenticate API calls.
+* **Refresh Token?**: Long-lived token stored securely to fetch a new access token without re-authenticating the user.
+* **JWT?**: JSON Web Token consisting of Header, Payload, and Signature, verified by the backend using Keycloak's public keys.
+
+8. What challenges did you face during Angular migration?
+Answer: Migrating OneYotta from Angular 14 to 17 involved moving to a standalone component structure, adopting the new control flow syntax, and updating deprecated dependencies.
+
+Follow-up:
+* **Breaking changes?**: Node module incompatibilities and changes in class-based lifecycle hooks were resolved by updating code to use inject-based DI and standalone components.
+* **RxJS migration?**: Handled changes in operator signatures (like `switchMap` and `combineLatest`), replacing deprecated syntax and cleaning up subscriptions using `takeUntilDestroyed`.
+
+9. How did you improve dashboard performance by 30%?
+Answer: Optimized the portal dashboard by adopting:
+1. **Lazy Loading**: Splitting the bundles so that components are loaded only when navigated to.
+2. **NgRx Optimization**: Reducing redundant selector computations and batching actions.
+3. **API Optimization**: Consolidating requests and introducing caching for static/slow-changing metadata.
+4. **OnPush Change Detection**: Stopping Angular's default change detection from running on unchanged subtrees.
+
+Follow-up:
+* **How did you measure it?**: Measured using Chrome DevTools (Lighthouse, Core Web Vitals) and Angular DevTools, tracking reductions in bundle size and scripting time.
+
+10. Explain CCTV streaming optimization.
+Answer: Optimized live playback streams on our security dashboard to reduce latency and CPU usage during simultaneous camera feeds.
+
+Follow-up:
+* **Protocol used?**: Transited from RTSP to WebRTC for low-latency streaming.
+* **Latency reduction?**: Latency dropped from ~2-3 seconds to sub-500ms.
+* **WebRTC?**: Set up a signaling server and STUN/TURN servers to establish peer-to-peer connections between client and streaming gateways.
+
+11. Explain MyPortal architecture.
+Answer: An internal application at Yotta used by operations teams to track data center assets, tickets, and facility parameters in real-time.
+
+Follow-up:
+* **Backend?**: Built with Python (FastAPI/Django) communicating with PostgreSQL.
+* **Real-time updates?**: Used WebSockets to push live facility alerts and ticket updates directly to the operational dashboards.
+
+12. Why NgRx?
+Answer: To maintain a single source of truth for global state (user profiles, system configs, permissions) across highly nested and sibling components, avoiding complex prop-drilling.
+
+Follow-up:
+* **Redux principles?**: Single source of truth, state is read-only (mutated only by dispatching actions), and changes are made with pure functions (reducers).
+* **Store lifecycle?**: Component dispatches an Action -> Effect intercepts for API call -> Reducer updates state -> Store notifies Selectors -> UI updates.
+
+13. How do you handle large datasets in Angular?
+Answer: We use virtual scrolling (rendering only visible rows in the viewport), pagination, pagination-at-DB-level, and trackBy functions in `*ngFor` loops to prevent re-rendering entire lists.
+
+14. How do you manage application state?
+Answer: For global/complex state we use NgRx. For local/simple component state, we use Angular Services with RxJS BehaviorSubjects or local state signals.
+
+15. Most difficult bug you solved?
+Answer: A memory leak in the OneYotta portal where navigations between monitoring tabs caused the tab component's RxJS subscriptions to accumulate. I diagnosed it using Chrome Heap Snapshots and fixed it by implementing `takeUntil` auto-unsubscribe patterns.
+
+### Section 3: Nyaya-Pro (Questions 16-25)
+
+This is where most LTIMindtree interviewers will spend time.
+
+16. Explain Nyaya-Pro architecture.
+Answer: Nyaya-Pro is an intelligent legal document assistant that queries Indian law files.
+```
+User
+ ↓
+Query Router
+ ↓
+Retriever
+ ↓
+FAISS
+ ↓
+Re-ranker
+ ↓
+Gemini
+ ↓
+Answer
+```
+
+17. Why legal domain?
+Answer: Legal texts are long, dense, and full of cross-references. Lawyers spend hours searching for specific precedents. Nyaya-Pro automates this search, saving time and improving legal research efficiency.
+
+18. What documents did you use?
+Answer: Focuses on Indian statutes and legal manuals.
+
+Follow-up:
+* **Constitution?**: Indexed the complete Constitution of India.
+* **BNS?**: Bharatiya Nyaya Sanhita (criminal code).
+* **BNSS?**: Bharatiya Nagarik Suraksha Sanhita (criminal procedure).
+* **CPC?**: Code of Civil Procedure.
+
+19. What embedding model did you use?
+Answer: Used `bge-large-en-v1.5` from HuggingFace.
+
+Follow-up:
+* **Why that model?**: It ranks highly on the MTEB (Massive Text Embedding Benchmark) for retrieval tasks, offers 1024-dimension embeddings, and captures legal semantics extremely well.
+
+20. Why FAISS?
+Answer: FAISS (Facebook AI Similarity Search) is an open-source, highly optimized library for dense vector similarity search.
+
+Follow-up:
+* **Why not Pinecone?**: For this application, a local, self-hosted index was preferred to keep data within the local infrastructure (data sovereignty for legal documents) and avoid subscription costs.
+
+21. Explain chunking strategy.
+Answer: Used semantic chunking backed by recursive text splitting.
+
+Follow-up:
+* **Chunk size?**: ~512 tokens.
+* **Overlap?**: 50 tokens (to preserve context boundaries between chunks).
+
+22. Explain semantic search.
+Answer: Vector search that matches queries to documents based on conceptual meaning rather than keyword matching, converting texts into dense vectors and finding proximity using similarity metrics.
+
+23. What is reranking?
+Answer: Reranking takes the top $K$ results retrieved by the bi-encoder (vector DB) and re-evaluates them using a more powerful cross-encoder model to sort them by actual relevance to the query.
+
+Follow-up:
+* **Cross-Encoder vs Bi-Encoder**: Bi-encoders embed query and documents separately (fast vector search). Cross-encoders process the query and document together, outputting a direct similarity score (slower but much more accurate).
+
+24. What causes hallucination?
+Answer: Hallucination occurs when the LLM generates plausible-sounding but factually incorrect information due to gaps in the prompt context or out-of-domain queries.
+
+Follow-up:
+* **How did Nyaya-Pro reduce hallucinations?**: By forcing the model to only answer based on the retrieved context, implementing strict system prompts, and requiring direct section/clause citations.
+
+25. What happens if no relevant document is found?
+Answer: The system prompt instructs the model to state: "I cannot find relevant information in the provided legal source documents" rather than generating an answer.
+
+### Section 4: JobPilot AI (Questions 26-32)
+
+26. Explain JobPilot AI architecture.
+Answer: JobPilot AI is an automated resume optimizer built with CrewAI.
+1. A user uploads a resume and job description.
+2. CrewAI assigns tasks to specialized agents.
+3. The final outputs (optimized resume bullet points, cover letter) are returned to the user.
+
+27. Why CrewAI?
+Answer: CrewAI excels at role-playing agent orchestration where agents require clean sequential or hierarchical pipelines to execute tasks cooperatively.
+
+Follow-up:
+* **Why not LangGraph?**: LangGraph is ideal for complex, stateful cycles and flowcharts. CrewAI provided a cleaner out-of-the-box abstraction for simple role-based workflows without excessive custom loop coding.
+
+28. What agents did you create?
+Answer:
+1. **Resume Analyzer**: Examines current resume structure.
+2. **ATS Optimizer**: Identifies keyword gaps based on the job description.
+3. **Cover Letter Writer**: Drafts customized cover letters.
+4. **Reviewer**: Evaluates the final results against the initial guidelines.
+
+29. How do agents communicate?
+Answer: CrewAI manages agent communication through task outputs. The output of one agent's task is passed as context input to the next agent's task, mimicking a pipeline.
+
+30. How do you prevent infinite loops?
+Answer: Enforced max iterations limits (`max_iter`) on each agent and set strict timeouts to prevent agents from repeatedly calling tools without reaching a conclusion.
+
+31. Why Groq?
+Answer: Groq provides ultra-fast LLM inference using LPU (Language Processing Unit) hardware.
+
+Follow-up:
+* **Groq vs OpenAI?**: Groq API is significantly faster (often 200-300+ tokens per second), which is essential for interactive agent loops where latency accumulates.
+
+32. Ollama vs Groq?
+Answer: Ollama runs open-source models locally (useful for private developer testing). Groq provides hosted, highly accelerated open-source models (Llama 3, Mixtral) in production with enterprise scalability.
+
+### Section 5: ExamGenie AI (Questions 33-37)
+
+33. Explain ExamGenie architecture.
+Answer: ExamGenie AI parses study documents and automatically generates interactive MCQs and study cards. It uses FastAPI for the API layer and Gemini Flash to analyze documents and generate structured JSON outputs.
+
+34. How do you process PDFs?
+Answer: Uploaded PDFs are parsed to extract textual content and structure.
+
+Follow-up:
+* **Libraries used?**: Used `PyPDF2` / `pdfplumber` for text extraction, and OCR when handling scanned image PDFs.
+
+35. How do you generate MCQs?
+Answer: Extracted study text is chunked, and Gemini Flash is prompted to generate dynamic multiple-choice questions, specifying correct answers, distractors, and educational explanations.
+
+36. How do you evaluate answer quality?
+Answer: User answers are compared against the correct options. We run LLM evaluation prompts to check partial correctness on open-ended study cards.
+
+37. Why Gemini Flash?
+Answer: Gemini Flash is highly cost-effective, supports a massive context window (1 million tokens), and is extremely fast.
+
+Follow-up:
+* **Gemini Flash vs GPT-4o?**: Flash is significantly cheaper and faster, making it perfect for processing hundreds of study pages and generating structured questions at scale.
+
+### Section 6: FastAPI (Questions 38-42)
+
+38. Why FastAPI?
+Answer: It is extremely fast (performance on par with Go/NodeJS), uses Pydantic for automatic request validation, supports native async, and generates OpenAPI documentation out-of-the-box.
+
+Follow-up:
+* **FastAPI vs Flask**: Flask is synchronous and requires third-party plugins for validation and documentation. FastAPI is asynchronous, type-hint driven, and self-documenting.
+
+39. Explain async APIs.
+Answer: APIs defined with `async def` that yield control back to the event loop during I/O operations (like database queries or external LLM calls), allowing a single process to handle thousands of concurrent requests.
+
+40. Explain dependency injection.
+Answer: Declaring required resources (like db sessions or security credentials) as parameters using `Depends()`. FastAPI resolves and injects them before running the endpoint.
+
+41. How did you deploy FastAPI?
+Answer: Deployed using Uvicorn as the ASGI server inside a Docker container.
+
+Follow-up:
+* **Docker/Nginx/Gunicorn?**: The Docker container runs Gunicorn with Uvicorn workers (`UvicornWorker`) to manage multiple processes. Nginx is set up as a reverse proxy to handle SSL and static assets.
+
+42. How would you scale FastAPI?
+Answer: Run multiple container instances behind a load balancer (using Kubernetes or AWS ECS) and scale Uvicorn worker counts per CPU core.
+
+### Section 7: GenAI Deep Dive (Questions 43-50)
+
+43. What is RAG?
+Answer: Retrieval-Augmented Generation. A pattern where relevant external data is retrieved and appended to the LLM's prompt context, allowing the model to answer queries using up-to-date or private documents.
+
+Follow-up:
+* **Why not fine-tuning?**: Fine-tuning changes model behavior/style but is expensive, prone to hallucinations, and does not support dynamic document updates or access controls. RAG updates instantly and cites references.
+
+44. Explain embeddings.
+Answer: Numerical vector representations of text where semantically similar concepts are located close to each other in a high-dimensional vector space.
+
+Follow-up:
+* **How are embeddings generated?**: By passing text through an embedding model (like `text-embedding-3-small` or `bge-large-en`), which outputs an array of floats (vectors).
+
+45. Explain vector databases.
+Answer: Specialized databases designed to store and index high-dimensional vectors, enabling extremely fast nearest-neighbor searches (like Cosine Similarity) across millions of entries.
+
+Follow-up:
+* **FAISS vs Pinecone**: FAISS is a local, self-hosted library optimized for CPU/GPU vector searches. Pinecone is a fully managed cloud vector database service designed for scale and multi-tenancy.
+
+46. What is cosine similarity?
+Answer: A metric measuring the cosine of the angle between two vectors in a multi-dimensional space:
+$$\text{Similarity} = \frac{A \cdot B}{\|A\| \|B\|}$$
+It outputs a value between -1 and 1, indicating how semantically similar the represented texts are.
+
+47. Explain prompt engineering.
+Answer: The practice of designing, structuring, and optimizing prompt instructions (using patterns like Chain of Thought, few-shot, or role prompting) to guide LLMs to produce accurate and consistent outputs.
+
+48. What is an AI Agent?
+Answer: An autonomous system powered by an LLM that can make decisions, use tools (like databases or calculators), write plans, and run in loops to achieve a specified goal.
+
+Follow-up:
+* **When should you NOT use agents?**: For highly predictable, deterministic tasks where traditional rule-based coding or sequential pipelines are faster, cheaper, and less prone to agent logic loops.
+
+49. Explain LangChain architecture.
+Answer: An open-source framework for building applications with LLMs. Key components include Models (LLMs/Embeddings), Prompts, Chains (sequencing operations), Indexes (document loading/vector stores), and Agents (reasoning loops).
+
+Follow-up:
+* **Chains vs Agents**: Chains are hard-coded, sequential execution pipelines. Agents use the LLM as a reasoning engine to dynamically decide the sequence of steps and tools to execute.
+
+50. If I give you ₹1 crore and ask you to build ChatGPT for legal documents, what architecture would you design?
+Answer: I would design a robust, high-performance retrieval and generation system:
+```
+Frontend (React/Next.js)
+ ↓
+FastAPI Gateway
+ ↓
+LangGraph Orchestration
+ ↓
+Embedding Model (cohere/bge)
+ ↓
+Vector DB (Qdrant/Pinecone) + Hybrid BM25 Search
+ ↓
+Cross-Encoder Reranker
+ ↓
+Hosted LLM (Llama 3/GPT-4o)
+ ↓
+Response (Token Streaming)
+```
+
+Key aspects:
+1. LangGraph for stateful session memory and multi-step reasoning.
+2. Hybrid Search (Dense vector search + Sparse keyword search) to locate precise clauses.
+3. Cohere Cross-Encoder Reranker to filter context.
+4. Prompt caching and semantic cache layers to manage costs and latency.
+5. Multi-tenant access controls for private legal documents.
 
 
 System Design & Scenario-Based
